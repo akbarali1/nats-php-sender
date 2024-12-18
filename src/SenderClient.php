@@ -8,21 +8,21 @@ use Illuminate\Support\Str;
 use Predis\Client;
 use Predis\PubSub\Consumer;
 
-class NatsSenderClient
+class SenderClient
 {
 	protected array $redisChannelName;
 	protected array $redisResponseChannelName;
-	
-	public static function getInstance(): static
-	{
-		return new static();
-	}
 	
 	public function __construct()
 	{
 		$config                         = config('nats.redis', []);
 		$this->redisChannelName         = $config['redis']['channel_name'] ?? ['requests_channel'];
 		$this->redisResponseChannelName = $config['redis']['response_channel_name'] ?? 'response_channel_';
+	}
+	
+	public static function getInstance(): static
+	{
+		return new static();
 	}
 	
 	public function sendMessageRabbit(string $subscribeName, mixed $request, array $headers = []): string
