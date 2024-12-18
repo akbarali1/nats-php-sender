@@ -21,7 +21,7 @@ class NatsChannelSender extends Command
 	public function __construct()
 	{
 		$this->natsConfiguration        = config('nats', []);
-		$this->redisChannelName         = $this->natsConfiguration['redis']['channel_name'] ?? ['requests_channel'];
+		$this->redisChannelName         = [$this->natsConfiguration['redis']['channel_name'] ?? 'requests_channel'];
 		$this->redisResponseChannelName = $this->natsConfiguration['redis']['response_channel_name'] ?? 'response_channel_';
 		
 		parent::__construct();
@@ -48,16 +48,14 @@ class NatsChannelSender extends Command
 				$data         = $requestData['data'];
 				$subscribe    = $data['subscribe'];
 				$start        = microtime(true);
-				$payload      = new Payload($data['params'], $data['headers']);
-				$response     = $this->natsClient->dispatch($subscribe, $payload);
+				$sendPayload  = new Payload($data['params'], $data['headers']);
+				$response     = $this->natsClient->dispatch($subscribe, $sendPayload);
+				$payload      = $response instanceof Payload ? $response : json_decode($response);
 				$end          = microtime(true);
 				$sendingRedis = Redis::connection('nats_sender')->publish($this->redisResponseChannelName.$requestId, json_encode([
 					'id'           => $requestId,
-					'nats_timeout' => [
-						'second'      => number_format(($end - $start), 3, '.', ''),
-						'microsecond' => number_format(($end - $start) * 1000000, 0, '.', ''),
-					],
-					"payload"      => json_decode($response),
+					'nats_timeout' => number_format(($end - $start) * 1000000, 0, '.', ''),
+					"payload"      => $payload,
 				]));
 				if ($sendingRedis === 1) {
 					$this->info("So'rov qabul qilindi.");
