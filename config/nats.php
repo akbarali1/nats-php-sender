@@ -26,4 +26,8 @@ return [
 		'name'  => 'default',
 	],
 	'available_locales' => ['uz', 'ru',],
+	
+	"redis" => [
+		'channel_name' => ['requests_channel'],
+	],
 ];

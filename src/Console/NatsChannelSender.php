@@ -14,14 +14,13 @@ class NatsChannelSender extends Command
 {
 	protected        $signature   = 'nats:redis:sender';
 	protected        $description = 'Redis Nats sender';
-	protected array  $redisChannelName;
-	protected array  $natsConfiguration;
+	protected array  $redisChannelName, $natsConfiguration;
 	protected Client $natsClient;
 	
 	public function __construct()
 	{
 		$this->natsConfiguration = file_exists(config_path('nats.php')) ? require config_path('nats.php') : [];
-		$this->redisChannelName  = $this->natsConfiguration['redis']['channel_name']['requests_channel'];
+		$this->redisChannelName  = $this->natsConfiguration['redis']['channel_name'] ?? ['requests_channel'];
 		
 		parent::__construct();
 	}
@@ -108,9 +107,9 @@ class NatsChannelSender extends Command
 		});
 		
 		// Continue Process
-		pcntl_signal(SIGCONT, function () {
-			$this->info("Received SIGCONT\n");
-		});
+		//		pcntl_signal(SIGCONT, function () {
+		//			$this->info("Received SIGCONT\n");
+		//		});
 	}
 	
 }
