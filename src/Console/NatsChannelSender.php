@@ -20,7 +20,7 @@ class NatsChannelSender extends Command
 	
 	public function __construct()
 	{
-		$this->natsConfiguration        = config('nats.redis', []);
+		$this->natsConfiguration        = config('nats', []);
 		$this->redisChannelName         = $this->natsConfiguration['redis']['channel_name'] ?? ['requests_channel'];
 		$this->redisResponseChannelName = $this->natsConfiguration['redis']['response_channel_name'] ?? 'response_channel_';
 		
@@ -29,11 +29,11 @@ class NatsChannelSender extends Command
 	
 	public function handle(): void
 	{
-		$config = new Configuration($this->natsConfiguration['configuration'] ?? []);
-		$config->setDelay($config['connection']['delay'] ?? 1);
-		$this->natsClient = new Client($config);
-		if (($config['connection']['name'] ?? null) !== null) {
-			$this->natsClient->setName($this->natsConfiguration['name'] ?? null);
+		$configuration = new Configuration($this->natsConfiguration['configuration'] ?? []);
+		$configuration->setDelay($this->natsConfiguration['connection']['delay'] ?? 1);
+		$this->natsClient = new Client($configuration);
+		if (($this->natsConfiguration['connection']['name'] ?? null) !== null) {
+			$this->natsClient->setName($this->natsConfiguration['connection']['name'] ?? null);
 		}
 		$this->natsClient->ping();
 		
