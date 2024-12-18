@@ -15,12 +15,14 @@ class NatsChannelSender extends Command
 	protected        $signature   = 'nats:redis:sender';
 	protected        $description = 'Redis Nats sender';
 	protected array  $redisChannelName, $natsConfiguration;
+	protected string $redisResponseChannelName;
 	protected Client $natsClient;
 	
 	public function __construct()
 	{
-		$this->natsConfiguration = file_exists(config_path('nats.php')) ? require config_path('nats.php') : [];
-		$this->redisChannelName  = $this->natsConfiguration['redis']['channel_name'] ?? ['requests_channel'];
+		$this->natsConfiguration        = config('nats.redis', []);
+		$this->redisChannelName         = $this->natsConfiguration['redis']['channel_name'] ?? ['requests_channel'];
+		$this->redisResponseChannelName = $this->natsConfiguration['redis']['response_channel_name'] ?? 'response_channel_';
 		
 		parent::__construct();
 	}
@@ -49,7 +51,7 @@ class NatsChannelSender extends Command
 				$payload      = new Payload($data['params'], $data['headers']);
 				$response     = $this->natsClient->dispatch($subscribe, $payload);
 				$end          = microtime(true);
-				$sendingRedis = Redis::connection('nats_sender')->publish("responses_channel_{$requestId}", json_encode([
+				$sendingRedis = Redis::connection('nats_sender')->publish($this->redisResponseChannelName.$requestId, json_encode([
 					'id'           => $requestId,
 					'nats_timeout' => [
 						'second'      => number_format(($end - $start), 3, '.', ''),
@@ -61,6 +63,8 @@ class NatsChannelSender extends Command
 					$this->info("So'rov qabul qilindi.");
 				} else {
 					$this->error("Qabul qilmadi.");
+					Log::error("Redis so'rov qabul qilmay qoldi.");
+					Log::error($message);
 				}
 			});
 			$this->info("{$this->signature} -- end");
@@ -107,9 +111,9 @@ class NatsChannelSender extends Command
 		});
 		
 		// Continue Process
-		//		pcntl_signal(SIGCONT, function () {
-		//			$this->info("Received SIGCONT\n");
-		//		});
+		//pcntl_signal(SIGCONT, function () {
+		//	$this->info("Received SIGCONT\n");
+		//});
 	}
 	
 }
