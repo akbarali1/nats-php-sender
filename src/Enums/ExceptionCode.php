@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 enum ExceptionCode: int
 {
-	case UnknownExceptionCode = -1000;
+	case UnknownExceptionCode       = -1000;
+	case SenderResponseNull         = -1001;
+	case SenderResponseNotSupported = -2000;
 	
 	public function getStatusCode(): int
 	{

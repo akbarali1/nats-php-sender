@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Akbarali\NatsSender;
 
+use Akbarali\NatsSender\DataObjects\PayloadData;
+use Akbarali\NatsSender\Exceptions\NotSupportedException;
+use Akbarali\NatsSender\Exceptions\SenderException;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Predis\Client;
@@ -25,10 +28,15 @@ class SenderClient
 		return new static();
 	}
 	
+	/**
+	 * @throws NotSupportedException
+	 * @throws SenderException
+	 */
 	public function sendMessageRabbit(string $subscribeName, mixed $request, array $headers = []): PayloadData
 	{
 		$requestId       = Str::uuid()->toString();
 		$responseChannel = [$this->redisResponseChannelName.$requestId];
+		$start           = microtime(true);
 		
 		/** @var Client $client */
 		$client = Redis::connection('nats_sender')->client();
@@ -55,8 +63,20 @@ class SenderClient
 			}
 			$i++;
 		}
+		if (is_null($response)) {
+			throw SenderException::senderResponseNull();
+		}
+		$response = json_decode($response, true);
+		$end      = microtime(true);
+		if (isset($response['payload']['subject'])) {
+			return PayloadData::fromArray($response['payload'] + [
+					'natsTimeOut'  => $response['nats_timeout'],
+					'totalTimeOut' => number_format(($end - $start) * 1000000, 0, '.', ''),
+					'requestId'    => $response['id'],
+				]);
+		}
 		
-		return $response;
+		throw NotSupportedException::responseNotSupported();
 	}
 	
 }

@@ -4,60 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a108c03f1d1f64b616e65423d1d05dbe",
+    "content-hash": "a20eb4f43e4e8f92dded6f0511078665",
     "packages": [
-        {
-            "name": "akbarali/action-data",
-            "version": "1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/akbarali1/action-data.git",
-                "reference": "2d9963f06e517a9c71dd7a1539d0d430a5b3ab61"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/akbarali1/action-data/zipball/2d9963f06e517a9c71dd7a1539d0d430a5b3ab61",
-                "reference": "2d9963f06e517a9c71dd7a1539d0d430a5b3ab61",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": ">=8.10.0",
-                "illuminate/http": ">=8.10.0",
-                "illuminate/support": ">=7",
-                "illuminate/validation": ">=8.10.0",
-                "php": ">=8.0"
-            },
-            "require-dev": {
-                "roave/security-advisories": "dev-latest"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Akbarali\\ActionData\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Akbarali",
-                    "email": "github@akbarali.uz",
-                    "homepage": "https://github.com/akbarali1"
-                }
-            ],
-            "description": "Action Data Validate PHP Laravel",
-            "keywords": [
-                "laravel",
-                "php"
-            ],
-            "support": {
-                "issues": "https://github.com/akbarali1/action-data/issues",
-                "source": "https://github.com/akbarali1/action-data/tree/1.4.0"
-            },
-            "time": "2024-08-30T12:45:42+00:00"
-        },
         {
             "name": "akbarali/data-object",
             "version": "2.8.0",
