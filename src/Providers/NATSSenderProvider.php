@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Akbarali\NatsSender\Providers;
 
-use Akbarali\NatsSender\Commands\NatsChannelSender;
+use Akbarali\NatsSender\Console\NatsChannelSender;
 use Illuminate\Support\ServiceProvider;
 
 class NATSSenderProvider extends ServiceProvider

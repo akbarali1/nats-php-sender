@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Akbarali\NatsSender\Commands;
+namespace Akbarali\NatsSender\Console;
 
 use Basis\Nats\Client;
 use Basis\Nats\Configuration;
