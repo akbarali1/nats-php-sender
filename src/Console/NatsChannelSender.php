@@ -57,9 +57,7 @@ class NatsChannelSender extends Command
 					'nats_timeout' => number_format(($end - $start) * 1000000, 0, '.', ''),
 					"payload"      => $payload,
 				]));
-				if ($sendingRedis === 1) {
-					$this->info("So'rov qabul qilindi.");
-				} else {
+				if ($sendingRedis !== 1) {
 					$this->error("Qabul qilmadi.");
 					Log::error("Redis so'rov qabul qilmay qoldi.");
 					Log::error($message);
